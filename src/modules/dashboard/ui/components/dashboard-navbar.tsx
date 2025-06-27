@@ -17,12 +17,9 @@ const DashboardNavbar = () => {
         setCommandOpen((open) => !open);
       }
     };
-
     document.addEventListener("keydown", down);
 
-    return () => {
-      document.removeEventListener("keydown", down);
-    };
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   return (
