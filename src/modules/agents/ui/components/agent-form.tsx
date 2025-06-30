@@ -41,6 +41,22 @@ export const AgentForm = ({
         await queryClient.invalidateQueries(
           trpc.agents.getMany.queryOptions({})
         );
+        // TODO: Invalidate free tire usage
+        onSuccess?.();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        // TODO: if error code is "FORBIDDEN", redirect user to upgrade
+      },
+    })
+  );
+
+  const updateAgent = useMutation(
+    trpc.agents.update.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
         if (isEdit) {
           await queryClient.invalidateQueries(
             trpc.agents.getOne.queryOptions({
@@ -67,13 +83,13 @@ export const AgentForm = ({
 
   const onSubmit = async (values: z.infer<typeof agentsInsetSchema>) => {
     if (isEdit) {
-      console.log("TODO: update agent");
+      updateAgent.mutate({ ...values, id: initialValues.id });
     } else {
       createAgent.mutate(values);
     }
   };
 
-  const isPending = createAgent.isPending;
+  const isPending = createAgent.isPending || updateAgent.isPending;
 
   return (
     <Form {...form}>
