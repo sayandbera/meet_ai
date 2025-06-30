@@ -38,7 +38,9 @@ export const AgentForm = ({
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions());
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
         if (isEdit) {
           await queryClient.invalidateQueries(
             trpc.agents.getOne.queryOptions({
@@ -103,7 +105,7 @@ export const AgentForm = ({
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="e.g. You are a helpful Physics assistant that can answer questions and help with assignments."
+                  placeholder="You are a helpful Physics assistant that can answer questions and help with assignments."
                 />
               </FormControl>
               <FormMessage />
