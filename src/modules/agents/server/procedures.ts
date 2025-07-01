@@ -98,6 +98,20 @@ export const agentsRouter = createTRPCRouter({
       return existingAgent;
     }),
 
+  create: protectedProcedure
+    .input(agentsInsetSchema)
+    .mutation(async ({ input, ctx }) => {
+      const [createdAgent] = await db
+        .insert(agents)
+        .values({
+          ...input,
+          userId: ctx.auth.user.id,
+        })
+        .returning();
+
+      return createdAgent;
+    }),
+
   update: protectedProcedure
     .input(agentsUpdateSchema)
     .mutation(async ({ ctx, input }) => {
@@ -131,19 +145,5 @@ export const agentsRouter = createTRPCRouter({
       }
 
       return removedAgent;
-    }),
-
-  create: protectedProcedure
-    .input(agentsInsetSchema)
-    .mutation(async ({ input, ctx }) => {
-      const [createdAgent] = await db
-        .insert(agents)
-        .values({
-          ...input,
-          userId: ctx.auth.user.id,
-        })
-        .returning();
-
-      return createdAgent;
     }),
 });
