@@ -8,9 +8,9 @@ import React from "react";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/empty-state";
 import { useAgentsFilter } from "../../hooks/use-agents-filter";
-import { DataPagination } from "../components/data-pagination";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/data-table";
+import { DataPagination } from "@/components/data-pagination";
 
 export const AgentsView = () => {
   const router = useRouter();
@@ -38,7 +38,7 @@ export const AgentsView = () => {
       <DataPagination
         page={filters.page}
         totalPages={data.totalPages}
-        onPageChange={(page) => setFilters({ ...filters, page })}
+        onPageChange={(page) => setFilters({ page })}
       />
     </div>
   );
