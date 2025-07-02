@@ -14,6 +14,12 @@ import { MeetingIdViewHeader } from "../components/meeting-id-view-header";
 import { toast } from "sonner";
 import { UpdateMeetingDialog } from "../components/update-meeting-dialog";
 import { useConfirm } from "@/hooks/use-confirm";
+import {
+  ActiveState,
+  CancelledState,
+  ProcessingState,
+  UpcomingState,
+} from "../components/meeting-states";
 
 interface Props {
   meetingId: string;
@@ -56,6 +62,12 @@ export const MeetingIdView = ({ meetingId }: Props) => {
     await removeAgent.mutate({ id: meetingId });
   };
 
+  const isActive = meeting.status === "active";
+  const isUpcoming = meeting.status === "upcoming";
+  const isCancelled = meeting.status === "cancelled";
+  const isCompleted = meeting.status === "completed";
+  const isProcessing = meeting.status === "processing";
+
   return (
     <>
       <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
@@ -65,6 +77,18 @@ export const MeetingIdView = ({ meetingId }: Props) => {
           onEdit={() => setUpdateMeetingDialogOpen(true)}
           onRemove={handleRemoveMeeting}
         />
+
+        {isActive && <ActiveState meetingId={meetingId} />}
+        {isUpcoming && (
+          <UpcomingState
+            meetingId={meetingId}
+            onCancelMeeting={() => {}}
+            isCancelling={false}
+          />
+        )}
+        {isCancelled && <CancelledState />}
+        {isCompleted && <div>Completed</div>}
+        {isProcessing && <ProcessingState />}
       </div>
 
       {/* Dialog to update the agent */}
